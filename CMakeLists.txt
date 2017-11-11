@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(CameraRotation)
+project(FantasyWorld)
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
