@@ -1,8 +1,12 @@
 #include "Keyboard.h"
-#include "../Camera/Camera.h"
+#include "../Util/Camera.h"
 #include "GL/glut.h"
 #include "Mouse.h"
 #include <math.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 Keyboard::Keyboard(Camera *camera, Mouse *mouse)
 {
@@ -10,36 +14,40 @@ Keyboard::Keyboard(Camera *camera, Mouse *mouse)
     this->mouse = mouse;
 }
 
-void Keyboard::keyAction(unsigned char key, int x, int y)
+bool Keyboard::keyAction(unsigned char key, int x, int y)
 {
     switch (key)
     {
     case ' ':
         this->camera->toggleFPS();
         mouse->cursorToggle();
-        break;
+        return true;
     case 'w':
         this->camera->move();
-        break;
+        return true;
     case 's':
         this->camera->move(-this->camera->getTranslationSpeed());
-        break;
+        return true;
     case 'd':
         this->camera->strafe(-this->camera->getTranslationSpeed());
-        break;
+        return true;
     case 'a':
         this->camera->strafe();
-        break;
-        // case '+':
-        //     LightPosition[2] += 2.0f;
-        //     break;
-        // case '-':
-        //     LightPosition[2] -= 2.0f;
-        //     break;
+        return true;
+    case 'q':
+        if(!this->camera->isFPSMode())
+            camera->rotateCamera(-3);
+        return true;
+    case 'e':
+        if(!this->camera->isFPSMode())
+            camera->rotateCamera(3);
+        return true;
     }
+
+    return false;
 }
 
-void Keyboard::specialKeyAction(int key, int x, int y)
+bool Keyboard::specialKeyAction(int key, int x, int y)
 {
     if (!this->camera->isFPSMode())
     {
@@ -47,22 +55,30 @@ void Keyboard::specialKeyAction(int key, int x, int y)
         {
         case GLUT_KEY_UP:
             this->camera->rotateAngleX(M_PI / 180 * 3);
+            return true;
             break;
         case GLUT_KEY_DOWN:
             this->camera->rotateAngleX(M_PI / 180 * -3);
+            return true;
             break;
         case GLUT_KEY_LEFT:
             this->camera->rotateAngleY(M_PI / 180 * -3);
+            return true;
             break;
         case GLUT_KEY_RIGHT:
             this->camera->rotateAngleY(M_PI / 180 * 3);
+            return true;
             break;
         case GLUT_KEY_PAGE_UP:
             this->camera->fly(1);
+            return true;
             break;
         case GLUT_KEY_PAGE_DOWN:
             this->camera->fly(-1);
+            return true;
             break;
         }
     }
+
+    return false;
 }

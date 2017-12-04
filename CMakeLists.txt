@@ -9,10 +9,6 @@ file(
     GLOB OBJEK 
     Objek/*.cpp 
     Objek/*.h 
-    Camera/*.cpp 
-    Camera/*.h 
-    Warna/*.cpp 
-    Warna/*.h 
     Input/*.cpp
     Input/*.h 
     Util/*.cpp
@@ -23,7 +19,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(
     SOURCE_FILES
-    index.cpp
+    main.cpp
     )
     
 add_executable(FantasyWorld ${SOURCE_FILES} ${OBJEK})

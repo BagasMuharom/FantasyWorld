@@ -1,7 +1,10 @@
 #include "Mouse.h"
-#include "../Camera/Camera.h"
+#include "../Util/Camera.h"
 #include "GL/glut.h"
 #include <math.h>
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 Mouse::Mouse(Camera* camera, int vw, int vh)
 {
@@ -13,7 +16,7 @@ Mouse::Mouse(Camera* camera, int vw, int vh)
 void Mouse::passive(int x, int y)
 {
     static bool just_warped = false;
-    
+
     if (just_warped)
     {
         just_warped = false;

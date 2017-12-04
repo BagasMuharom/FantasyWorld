@@ -2,6 +2,7 @@
 #include "GL/glut.h"
 #include <math.h>
 #include <iostream>
+#include "../Util/Util.h"
 
 using namespace std;
 
@@ -110,7 +111,13 @@ void Camera::fly(float incr)
 
 void Camera::rotateCamera(float angle)
 {
+    Vertex* v = new Vertex(1, 0, 0);
+    v->rotate(angle, 0, 1, 0);
+    v->translate(*this->lookX, *this->lookY, *this->lookZ);
 
+    *this->cameraX = v->x;
+    *this->cameraY = v->y;
+    *this->cameraZ = v->z;
 }
 
 void Camera::setTranslationSpeed(float speed)

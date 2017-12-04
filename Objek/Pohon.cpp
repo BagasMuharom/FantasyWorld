@@ -1,115 +1,137 @@
 #include "Pohon.h"
 #include "../Util/Util.h"
-#include "../Warna/Material.h"
-#include<GL/glut.h>
-#include<math.h>
-#include<iostream>
-#include<vector>
+#include <GL/glut.h>
+#include <iostream>
+#include <vector>
+#include "../Util/Color.h"
+#include "../Util/Material.h"
+#include "Objek.h"
 
 using namespace std;
 
-void Pohon::Cemara(
+GrupObjek* Pohon::Cemara(
     unsigned short int jumlahCemara,
     float tinggiBatang,
     float radiusDasarCemara,
     float jarakCemara,
     float tinggiCemaraDasar)
-{   
-    glColor3f(0.8, 0.8, 0.3);
-    batangCemara(tinggiBatang, radiusDasarCemara / 3, radiusDasarCemara / 4, 8);
+{
+    GrupObjek* pohon = new GrupObjek();
+    pohon->addObjek(batangCemara(tinggiBatang, radiusDasarCemara / 5, radiusDasarCemara / 6, 8)->setColor( ColorList::batang()));
 
     // Membuat cemara
     for (unsigned short int i = 0; i < jumlahCemara; i++)
     {
         float lokasiCemara = tinggiBatang + jarakCemara * i;
-        glPushMatrix();
-        glColor3ub(20, 255, 20);
-        glTranslatef(0, lokasiCemara, 0);
-        cemara(radiusDasarCemara -= 0.2, tinggiCemaraDasar -= 0.2, 8);
-        glPopMatrix();
+        pohon->addObjek(dahanCemara(radiusDasarCemara -= 0.2, tinggiCemaraDasar -= 0.2, 10)->translate(0, lokasiCemara, 0)->setColor(ColorList::hijau(1)));
     }
-    
-}
 
-void Pohon::cemara(float radius, float tinggi, int slices)
-{
-    vector<Vertex> vertices;
-    glBegin(GL_POLYGON);
-    for(float rad = 0; rad < 2 * M_PI; rad += M_PI / (slices / 2)) {
-        float x = radius * cos(rad);
-        float z = radius * sin(rad);
-        glNormal3f(x, 0, z);
-        glVertex3f(x, 0, z);
-
-        // Menyimpan vertex agar nanti tidak perlu hitung lagi
-        vertices.push_back(Vertex(x, 0, z));
-    }
-    glEnd();
-
-    // Draw the triangles
-    for(int point = 0; point < vertices.size(); point++) {
-        // cout << vertices[point].x << " " << vertices[point].y << " " << vertices[point].z << endl;
-        glBegin(GL_POLYGON);
-            float vertexBefore[3] = {vertices[point].x, vertices[point].y, vertices[point].z};
-            float vertexAfter[3];
-
-            if(point == vertices.size() - 1) {
-                vertexAfter[0] = vertices[0].x;
-                vertexAfter[1] = vertices[0].y;
-                vertexAfter[2] = vertices[0].z;
-            }
-            else {
-                vertexAfter[0] = vertices[point + 1].x;
-                vertexAfter[1] = vertices[point + 1].y;
-                vertexAfter[2] = vertices[point + 1].z;
-            }
-            
-            glNormal3f(vertexBefore[0], vertexBefore[1], vertexBefore[2]);
-            glVertex3f(vertexBefore[0], vertexBefore[1], vertexBefore[2]);
-            glNormal3f(vertexAfter[0], vertexAfter[1], vertexAfter[2]);
-            glVertex3f(vertexAfter[0], vertexAfter[1], vertexAfter[2]);
-            glNormal3f(0, tinggi, 0);
-            glVertex3f(0, tinggi, 0);
-        glEnd();
-    }
+    return pohon;
 
 }
 
-void Pohon::batangCemara(float tinggi, float radiusBawah, float radiusAtas, int slices)
+Objek* Pohon::dahanCemara(float radius, float tinggi, int slices)
 {
-    glPushMatrix();
-    
-    float xPutarBawah = 0;
-    float zPutarBawah = radiusBawah / 2;
-    float xPutarAtas = 0;
-    float zPutarAtas = radiusAtas / 2;
-    for(float sudut = 0; sudut <= 360; sudut += (360 / slices)) {
-        glBegin(GL_POLYGON);
-        float radBefore = sudut * M_PI / 180;
-        float radAfter = (sudut + (360 / slices)) * M_PI / 180;
+    Vertex* base = new Vertex(radius, 0, 0);
 
-        // vertices bawah
-        float x = xPutarBawah * cos(radBefore) + zPutarBawah * sin(radBefore);
-        float z = - xPutarBawah * sin(radBefore) + zPutarBawah * cos(radBefore);
-        glNormal3f(x, 0, z);
-        glVertex3f(x, 0, z);
+    Objek* objek = new Objek();
 
-        x = xPutarBawah * cos(radAfter) + zPutarBawah * sin(radAfter);
-        z = -xPutarBawah * sin(radAfter) + zPutarBawah * cos(radAfter);
-        glNormal3f(x, 0, z);
-        glVertex3f(x, 0, z);
+    // Menggambar kerucut
+    float kebawah = false;
+    float minusIncr = radius / 10;
+    for(float degree = 0; degree <= 360; degree += 360 / slices) {
+        Face* face = new Face();
+        if(kebawah)
+            face->addVertex(base->clone()->translate(0, -minusIncr, 0)->rotate(degree, 0, 1 ,0));
+        else
+            face->addVertex(base->clone()->rotate(degree, 0, 1 ,0));
 
-        // vertices atas
-        x = xPutarAtas * cos(radAfter) + zPutarAtas * sin(radAfter);
-        z = -xPutarAtas * sin(radAfter) + zPutarAtas * cos(radAfter);
-        glNormal3f(x, tinggi, z);
-        glVertex3f(x, tinggi, z);
+        if(kebawah)
+            face->addVertex(base->clone()->rotate(degree + (360 / slices), 0, 1, 0));
+        else
+            face->addVertex(base->clone()->translate(0, -minusIncr, 0)->rotate(degree + (360 / slices), 0, 1, 0));
 
-        x = xPutarAtas * cos(radBefore) + zPutarAtas * sin(radBefore);
-        z = - xPutarAtas * sin(radBefore) + zPutarAtas * cos(radBefore);
-        glNormal3f(x, tinggi, z);
-        glVertex3f(x, tinggi, z);
-        glEnd();
+        face->addVertex(0, tinggi, 0);
+        objek->addFace(face);
+
+        Face* bawah = new Face();
+        bawah->addVertex(face->getVertices()[0].clone());
+        bawah->addVertex(face->getVertices()[1].clone());
+        bawah->addVertex(new Vertex(0, 0, 0));
+        objek->addFace(bawah);
+
+        kebawah = !kebawah;
     }
-    glPopMatrix();
+
+    delete base;
+
+    return objek;
+}
+
+Objek* Pohon::batangCemara(float tinggi, float radiusBawah, float radiusAtas, int slices)
+{
+    Objek* batang = new Objek();
+    if(tinggi >= 0.5) {
+        Objek* atas = tabung(radiusAtas, radiusBawah, tinggi / 2, slices, false, false)->translate(0, tinggi / 2, 0);
+        batang->combine(atas);
+        
+        Objek* bawah = tabung(radiusBawah, radiusAtas, tinggi / 2, slices, false, false);
+        batang->combine(bawah);
+        
+        delete atas;
+        delete bawah;
+
+        return batang;
+    }
+    else {
+        return tabung(radiusBawah, radiusAtas, tinggi / 2, slices, false, false);
+    }
+}
+
+GrupObjek* Pohon::Biasa(int jumlahRanting, float tinggiBatang)
+{
+    GrupObjek* pohon = new GrupObjek();
+
+    pohon->addObjek(batangCemara(((float)2 /(float) 3 * tinggiBatang), 0.6, 0.5, 8)->setColor(ColorList::batang()));
+    pohon->addObjek(tabung(0.6, 0.4, ((float)1 / (float) 3 * tinggiBatang) ,8, 0, 0)->translate(0, 4, 0));
+
+    bool turun = true;
+    for(float degree = 0; degree <= 360; degree += (360 / jumlahRanting)) {
+        Vertex v(0.2, 0, 0);
+        v.rotate(degree, 0, 1, 0);
+        pohon->addObjek(ranting()->setColor(ColorList::batang())->scale(1, 1, 3)->rotate(25, 1, 0, 0)->translate(0, tinggiBatang - (tinggiBatang / 5) + (turun ? -0.3 : 0), -1.7)->rotate(degree, 0, 1, 0));
+
+        pohon->addObjek(semak()->setColor(ColorList::hijau(1))->translate(0.5, tinggiBatang - (tinggiBatang / 10) + (turun ? -0.3 : 0), -2.5)->rotate(degree, 0, 1, 0));
+        turun = !turun;
+    }
+
+    pohon->addObjek(semak()->scale(2.5, 2, 2.5)->translate(0, tinggiBatang, 0));
+
+    return pohon;
+}
+
+GrupObjek* Pohon::CabangBanyak(int jumlahRanting)
+{
+    GrupObjek* pohon = new GrupObjek();
+
+    for(float degree = 0; degree <= 360; degree += (360 / jumlahRanting)) {
+        pohon->addObjek(batang2()->scale(1.5, 3, 1.5)->rotate(-15, 1, 0, 0)->rotate(degree, 0, 1 ,0)->setColor(ColorList::batang()));
+        pohon->addObjek(batang2()->flip(0, 0, 1)->rotate(-15, 0, 1, 0)->translate(-0.7, 3, -0.75)->rotate(degree, 0, 1, 0));
+        pohon->addObjek(semak()->setColor(ColorList::hijau(1))->scale(0.75, 0.75, 0.75)->translate(-0.85, 4, -0.85)->rotate(degree, 0, 1, 0));
+        pohon->addObjek(semak()->setColor(ColorList::hijau(1))->scale(0.5, 0.5, 0.5)->translate(-0.25, 4.5, -0.4)->rotate(degree, 0, 1, 0));
+    }
+
+    return pohon;
+}
+
+void Pohon::EsKrim(float tinggiBatang, float tinggiDaun, float radiusDaun)
+{
+    batangCemara(tinggiBatang * 2, 0.25, 0.2, 8)->setColor(ColorList::batang())->draw();
+
+    semak()->setColor(ColorList::hijau(1))->flip(0, 1, 0)->scale(radiusDaun / 1.5, tinggiDaun / 2, radiusDaun / 1.5)->translate(0, tinggiBatang * 3, 0)->draw();
+}
+
+void Pohon::CemaraMati(float scale)
+{
+
 }
