@@ -144,7 +144,7 @@ void Misc::kayuUnggun()
 void Misc::gapura()
 {
     glPushMatrix();
-    glTranslatef(0, 4, 0);
+    glTranslatef(0, 4.5, 0);
     glRotatef(90, 1, 0, 0);
     kayuArah();
     glPopMatrix();
@@ -246,17 +246,30 @@ void Misc::blokDanau(float translasiTinggi)
 
 void Misc::blokDanauSatuSisi(float translasiTinggi, float translasiArus)
 {
-
     glPushMatrix();
     glTranslatef(0, translasiTinggi, 0);
-    persegi(3)->setColor(ColorList::air()->setAlpha(100))->drawNormal();
+    Face* obj = persegi(3)->setColor(ColorList::air()->setAlpha(100));
+    obj->drawNormal();
+    delete obj;
+    obj = nullptr;
 
     glPushMatrix();
     glTranslatef(translasiArus, 0, 0);
-    persegi(3)->scale(0.5, 1, 1)->translate(0, 0.001, 0)->setColor(ColorList::putih()->setAlpha(50))->drawNormal();
-    persegi(3)->scale(0.4, 1, 1)->translate(0, 0.002, 0)->setColor(ColorList::putih()->setAlpha(50))->drawNormal();
-    persegi(3)->scale(0.3, 1, 1)->translate(0, 0.003, 0)->setColor(ColorList::putih()->setAlpha(50))->drawNormal();
-    persegi(3)->scale(0.2, 1, 1)->translate(0, 0.004, 0)->setColor(ColorList::putih()->setAlpha(50))->drawNormal();
+    obj = persegi(3)->scale(0.5, 1, 1)->translate(0, 0.001, 0)->setColor(ColorList::putih()->setAlpha(50));
+    obj->drawNormal();
+    delete obj;
+    obj = nullptr;
+    obj = persegi(3)->scale(0.4, 1, 1)->translate(0, 0.002, 0)->setColor(ColorList::putih()->setAlpha(50));
+    obj->drawNormal();
+    delete obj;
+    obj = nullptr;
+    obj = persegi(3)->scale(0.3, 1, 1)->translate(0, 0.003, 0)->setColor(ColorList::putih()->setAlpha(50));
+    obj->drawNormal();
+    delete obj;
+    obj = nullptr;
+    obj = persegi(3)->scale(0.2, 1, 1)->translate(0, 0.004, 0)->setColor(ColorList::putih()->setAlpha(50));
+    obj->drawNormal();
+    delete obj;
     glPopMatrix();
     glPopMatrix();
 }

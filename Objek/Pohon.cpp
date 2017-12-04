@@ -124,11 +124,14 @@ GrupObjek* Pohon::CabangBanyak(int jumlahRanting)
     return pohon;
 }
 
-void Pohon::EsKrim(float tinggiBatang, float tinggiDaun, float radiusDaun)
+GrupObjek* Pohon::EsKrim(float tinggiBatang, float tinggiDaun, float radiusDaun)
 {
-    batangCemara(tinggiBatang * 2, 0.25, 0.2, 8)->setColor(ColorList::batang())->draw();
+    GrupObjek* pohon = new GrupObjek();
+    pohon->addObjek(batangCemara(tinggiBatang * 2, 0.25, 0.2, 8)->setColor(ColorList::batang()));
 
-    semak()->setColor(ColorList::hijau(1))->flip(0, 1, 0)->scale(radiusDaun / 1.5, tinggiDaun / 2, radiusDaun / 1.5)->translate(0, tinggiBatang * 3, 0)->draw();
+    pohon->addObjek(semak()->setColor(ColorList::hijau(1))->flip(0, 1, 0)->scale(radiusDaun / 1.5, tinggiDaun / 2, radiusDaun / 1.5)->translate(0, tinggiBatang * 3, 0));
+
+    return pohon;
 }
 
 void Pohon::CemaraMati(float scale)

@@ -511,31 +511,18 @@ int facesRumput[][4] = {
     {9, 12, 13, 16}
 };
 
-void rumput()
+Objek* rumput()
 {
-    glPushMatrix();
-    ColorList::daun()->set();
+    Objek* objek = new Objek();
     for(auto &point : facesRumput) {
         Face* face = new Face();
         for(auto &index : point) {
             face->addVertex(Vertex(verticesRumput[index - 1][0], verticesRumput[index - 1][1], verticesRumput[index - 1][2]));
         }
-        face->drawNormal();
-
-        delete face;
+        objek->addFace(face);
     }
-    glPopMatrix();
-}
 
-void rerumputan()
-{
-    rumput();
-
-    glPushMatrix();
-        glTranslatef(0.1, 0, 0.1);
-        glRotatef(75, 0, 1, 0);
-        rumput();
-    glPopMatrix();
+    return objek->translate(0, 0.15, 0);
 }
 
 float verticesKayuArah[][3] = {
@@ -1142,4 +1129,56 @@ Objek* mahkotaTeratai()
     objek->translate(0, 0, -2)->scale(0.1, 0.1, 0.1);
 
     return objek;
+}
+
+float verticesReed[][3] = {
+    {-0.127489, -0.271634, -0.105701},
+    {0.082253, -0.271634, -0.105701},
+    {-0.120050, -0.032505, -0.099775},
+    {0.072044, -0.032505, -0.099775},
+    {-0.115124, 0.178125, -0.075841},
+    {0.061316, 0.178125, -0.075841},
+    {-0.108494, 0.359291, -0.046412},
+    {0.049586, 0.359291, -0.046412},
+    {-0.100414, 0.528725, -0.002218},
+    {0.037563, 0.528725, -0.002218},
+    {-0.082844, 0.650867, 0.048593},
+    {0.029519, 0.650867, 0.048593},
+    {-0.071044, 0.719665, 0.096895},
+    {0.024417, 0.719665, 0.096895},
+    {-0.063504, 0.776244, 0.169768},
+    {0.021365, 0.776244, 0.169768},
+    {-0.056137, 0.795758, 0.242762},
+    {0.017680, 0.795758, 0.242762},
+    {-0.043637, 0.794501, 0.328001},
+    {0.009079, 0.794501, 0.328001},
+    {-0.010236, 0.768653, 0.405202}
+};
+
+int facesReed[][4] = {
+    {2, 1, 3, 4},
+    {4, 3, 5, 6},
+    {6, 5, 7, 8},
+    {8, 7, 9, 10},
+    {10, 9, 11, 12},
+    {12, 11, 13, 14},
+    {14, 13, 15, 16},
+    {16, 15, 17, 18},
+    {18, 17, 19, 20},
+    {20, 19, 21}
+};
+
+Objek* reed()
+{
+    Objek* objek = new Objek();
+    for(auto &faces : facesReed) {
+        Face* face = new Face();
+        for(auto &index : faces) {
+            if(index != 0)
+                face->addVertex(verticesReed[index - 1]);
+        }
+        objek->addFace(face);
+    }
+
+    return objek->translate(0, 0.45, 0);
 }

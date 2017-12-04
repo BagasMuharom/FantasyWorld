@@ -9,9 +9,7 @@ void batu2();
 
 Objek* semak();
 
-void rumput();
-
-void rerumputan();
+Objek* rumput();
 
 void kayuArah();
 
@@ -28,5 +26,7 @@ Objek* mahkotaBunga();
 Objek* daunTeratai();
 
 Objek* mahkotaTeratai();
+
+Objek* reed();
 
 #endif

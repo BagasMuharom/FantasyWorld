@@ -15,7 +15,7 @@ public:
     static void CemaraMati(float scale = 1);
     GrupObjek* Biasa(int jumlahRanting, float tinggiBatang);
     GrupObjek* CabangBanyak(int jumlahRanting);
-    void EsKrim(float tinggiBatang, float tinggiDaun, float radiusDaun);
+    GrupObjek* EsKrim(float tinggiBatang, float tinggiDaun, float radiusDaun);
 
 private:
     Objek* dahanCemara(float radius, float tinggi, int slices);
